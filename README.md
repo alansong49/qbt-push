@@ -74,7 +74,7 @@ docker compose up -d --build
 > 国内 NAS 若拉取 `python:3.12-alpine` 超时，执行 `sh install.sh --cn`（等同下面手动方式）：
 >
 > ```bash
-> PYTHON_IMAGE=docker.m.daocloud.io/library/python:3.12-alpine \
+> PYTHON_IMAGE=docker.1ms.run/library/python:3.12-alpine \
 > PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
 > docker compose up -d --build
 > ```

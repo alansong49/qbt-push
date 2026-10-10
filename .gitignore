@@ -1,0 +1,16 @@
+# 含 QBT 账号密码，禁止上传（容器首次启动会自动生成默认配置）
+data/config.json
+data/*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/

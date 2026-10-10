@@ -1,0 +1,18 @@
+services:
+  qbt-push:
+    build: .                                        # 使用当前目录 Dockerfile 构建镜像
+    image: qbt-push:latest
+    container_name: qbt-push
+    restart: unless-stopped                         # 开机自启 + 异常自动重启
+    ports:
+      - "5000:5000"                                 # 左边端口可改，如 "8080:5000" 则用 8080 访问
+    volumes:
+      # 配置持久化：容器重启/更新/重建后 QBT 连接参数不丢失
+      - ./data:/app/data
+    environment:
+      - TZ=Asia/Shanghai                            # 容器时区
+    logging:                                        # 日志轮转，防止占满 NAS 磁盘
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

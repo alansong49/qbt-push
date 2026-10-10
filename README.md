@@ -30,26 +30,32 @@
 
 ## 部署方式〇：一键脚本（所有 NAS 通用 · 最推荐）
 
-适用于群晖 / 威联通 / 绿联 / 飞牛等一切带 Docker 且支持 SSH 的 NAS，自动完成：compose 新旧版本兼容、项目文件完整性检查、国内网络加速。
+适用于群晖 / 威联通 / 绿联 / 飞牛等一切带 Docker 且支持 SSH 的 NAS。**默认直接拉取官方现成镜像启动，NAS 上完全无需构建**，几十秒即可完成部署。
 
-### 1. 上传项目到 NAS
-
-将整个项目目录上传到 NAS（务必包含 Dockerfile、app 目录、requirements.txt），例如 `/volume1/docker/qbt-push/`。
-
-### 2. SSH 登录 NAS 执行
+### 1. 下载项目到 NAS（只需 compose 文件和脚本）
 
 ```bash
-cd /volume1/docker/qbt-push
-
-sh install.sh        # 正常部署
-sh install.sh --cn   # NAS 拉取镜像超时 / 国内网络时使用（自动切换国内源）
+git clone https://github.com/alansong49/qbt-push.git
+cd qbt-push
 ```
 
-脚本会自动检查文件完整性 —— 缺文件会明确提示，不会再出现 "Dockerfile: no such file or directory" 或 "context deadline exceeded" 后一脸茫然。
+### 2. 一键部署
+
+```bash
+sh install.sh            # 拉取现成镜像并启动（推荐，无需构建）
+sh install.sh --cn       # GHCR 拉取超时（国内网络）时，走国内代理拉取
+sh install.sh --build    # NAS 本地构建模式（拉不到镜像时的备选）
+sh install.sh --build --cn   # 本地构建 + 国内源加速
+```
+
+脚本自动完成：拉取 `ghcr.io/alansong49/qbt-push:latest` 多架构镜像（amd64/arm64 自适应）、compose 新旧版本兼容、失败时给出明确下一步指引。
 
 ### 3. 访问
 
 浏览器打开 `http://<NAS局域网IP>:5000` 即可使用。
+
+> 说明：镜像由 GitHub Actions 在代码推送时自动构建发布，包含 amd64 与 arm64 双架构。
+> 如拉取提示未授权（镜像刚发布还未设为公开），到 GitHub 仓库页 → 右侧 Packages → qbt-push → Package settings → Change visibility → Public 一次即可。
 
 ## 部署方式一：docker compose
 

@@ -1,15 +1,16 @@
 services:
   qbt-push:
+    # 官方多架构镜像（amd64/arm64），NAS 直接拉取，无需构建
+    # GHCR 拉取超时时用国内代理: sh install.sh --cn
+    image: ghcr.io/alansong49/qbt-push:latest
+    # 备选：本地构建模式（不联网拉镜像时使用）
+    # 运行 sh install.sh --build 或手动:
+    #   docker compose up -d --build
     build:
-      context: .                                    # 使用当前目录 Dockerfile 构建镜像
+      context: .
       args:
-        # 基础镜像默认走官方源。若 NAS 拉取超时（context deadline exceeded），
-        # 运行: bash install.sh --cn   或手动将下行改为:
-        #   PYTHON_IMAGE: docker.m.daocloud.io/library/python:3.12-alpine
         PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.12-alpine}
-        # pip 依赖源，--cn 时自动切清华源
         PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
-    image: qbt-push:latest
     container_name: qbt-push
     restart: unless-stopped                         # 开机自启 + 异常自动重启
     ports:

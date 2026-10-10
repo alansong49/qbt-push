@@ -24,10 +24,34 @@
 ├── data/                  # 配置持久化目录（需挂载）
 ├── Dockerfile
 ├── docker-compose.yml
+├── install.sh            # 一键部署脚本（全 NAS 通用）
 └── requirements.txt
 ```
 
-## 部署方式一：docker compose（推荐）
+## 部署方式〇：一键脚本（所有 NAS 通用 · 最推荐）
+
+适用于群晖 / 威联通 / 绿联 / 飞牛等一切带 Docker 且支持 SSH 的 NAS，自动完成：compose 新旧版本兼容、项目文件完整性检查、国内网络加速。
+
+### 1. 上传项目到 NAS
+
+将整个项目目录上传到 NAS（务必包含 Dockerfile、app 目录、requirements.txt），例如 `/volume1/docker/qbt-push/`。
+
+### 2. SSH 登录 NAS 执行
+
+```bash
+cd /volume1/docker/qbt-push
+
+sh install.sh        # 正常部署
+sh install.sh --cn   # NAS 拉取镜像超时 / 国内网络时使用（自动切换国内源）
+```
+
+脚本会自动检查文件完整性 —— 缺文件会明确提示，不会再出现 "Dockerfile: no such file or directory" 或 "context deadline exceeded" 后一脸茫然。
+
+### 3. 访问
+
+浏览器打开 `http://<NAS局域网IP>:5000` 即可使用。
+
+## 部署方式一：docker compose
 
 ### 1. 上传项目到 NAS
 
@@ -40,6 +64,14 @@
 ```bash
 docker compose up -d --build
 ```
+
+> 国内 NAS 若拉取 `python:3.12-alpine` 超时，执行 `sh install.sh --cn`（等同下面手动方式）：
+>
+> ```bash
+> PYTHON_IMAGE=docker.m.daocloud.io/library/python:3.12-alpine \
+> PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
+> docker compose up -d --build
+> ```
 
 ### 3. 访问
 

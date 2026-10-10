@@ -5,10 +5,12 @@
 # =============================================================
 services:
   qbt-push:
-    # ---- 国内网络（DaoCloud 代理，推荐）----
-    image: docker.m.daocloud.io/ghcr.io/alansong49/qbt-push:latest
-    # ---- 海外网络或代理失败时，改用 GHCR 直连 ----
-    # image: ghcr.io/alansong49/qbt-push:latest
+    # ---- 国内网络（Docker Hub 代理，最快，推荐）----
+    image: docker.1ms.run/jockersilas/qbt-push:latest
+    # ---- 其他备选（任选其一）----
+    # image: docker.m.daocloud.io/jockersilas/qbt-push:latest
+    # image: docker.m.daocloud.io/ghcr.io/alansong49/qbt-push:latest
+    # image: jockersilas/qbt-push:latest
 
     container_name: qbt-push
     restart: unless-stopped                         # 开机自启 + 异常自动重启

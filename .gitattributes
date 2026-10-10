@@ -1,0 +1,4 @@
+# 保证在 NAS/Linux 上可直接执行：shell 脚本强制 LF 行尾
+*.sh text eol=lf
+*.py text eol=lf
+Dockerfile text eol=lf

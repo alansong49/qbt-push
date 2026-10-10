@@ -5,10 +5,10 @@
 # =============================================================
 services:
   qbt-push:
-    # ---- 国际网络（GHCR 直连）----
-    image: ghcr.io/alansong49/qbt-push:latest
-    # ---- 国内网络拉取超时时，注释上一行，启用下一行 ----
-    # image: docker.m.daocloud.io/ghcr.io/alansong49/qbt-push:latest
+    # ---- 国内网络（DaoCloud 代理，推荐）----
+    image: docker.m.daocloud.io/ghcr.io/alansong49/qbt-push:latest
+    # ---- 海外网络或代理失败时，改用 GHCR 直连 ----
+    # image: ghcr.io/alansong49/qbt-push:latest
 
     container_name: qbt-push
     restart: unless-stopped                         # 开机自启 + 异常自动重启

@@ -1,8 +1,10 @@
 services:
   qbt-push:
     # 官方多架构镜像（amd64/arm64），NAS 直接拉取，无需构建
-    # GHCR 拉取超时时用国内代理: sh install.sh --cn
-    image: ghcr.io/alansong49/qbt-push:latest
+    # 默认走 DaoCloud 国内代理（国内 NAS 拉取成功率高）
+    image: docker.m.daocloud.io/ghcr.io/alansong49/qbt-push:latest
+    # 海外网络或国内代理失败时，改用 GHCR 直连:
+    # image: ghcr.io/alansong49/qbt-push:latest
     # 备选：本地构建模式（不联网拉镜像时使用）
     # 运行 sh install.sh --build 或手动:
     #   docker compose up -d --build

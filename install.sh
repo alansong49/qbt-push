@@ -4,15 +4,16 @@
 # 兼容群晖 / 威联通 / 绿联 / 飞牛等所有带 Docker 的 NAS（SSH 执行）
 #
 # 用法:
-#   sh install.sh            # 默认：拉取官方现成镜像启动（无需构建，最快）
-#   sh install.sh --cn       # GHCR 拉取超时时，走国内代理拉取
+#   sh install.sh            # 默认：走国内代理拉取现成镜像启动（推荐）
+#   sh install.sh --ghcr     # 直连 GHCR 拉取（海外网络）
 #   sh install.sh --build    # 本地构建模式（NAS 自己构建镜像）
 #   sh install.sh --build --cn   # 本地构建 + 国内源加速
 # =============================================================
 set -e
 
-IMAGE="ghcr.io/alansong49/qbt-push:latest"
 IMAGE_CN="docker.m.daocloud.io/ghcr.io/alansong49/qbt-push:latest"
+IMAGE_GHCR="ghcr.io/alansong49/qbt-push:latest"
+IMAGE="$IMAGE_CN"
 
 print_done() {
   echo ""
@@ -29,6 +30,7 @@ for arg in "$@"; do
   case "$arg" in
     --build) MODE="build" ;;
     --cn)    USE_CN=1 ;;
+    --ghcr)  IMAGE="$IMAGE_GHCR" ;;
   esac
 done
 
@@ -50,22 +52,16 @@ fi
 
 # ---------- 3. 拉取现成镜像模式（默认） ----------
 if [ "$MODE" = "pull" ]; then
-  if [ "$USE_CN" = "1" ]; then
-    echo "==> 走国内代理拉取镜像: $IMAGE_CN"
-    if docker pull "$IMAGE_CN"; then
-      docker tag "$IMAGE_CN" "$IMAGE"
-      echo "==> 镜像已就绪"
-    else
-      echo "[错误] 国内代理也拉取失败，请改用本地构建: sh install.sh --build --cn"
-      exit 1
-    fi
-  else
-    echo "==> 拉取官方镜像: $IMAGE"
-    if ! docker pull "$IMAGE"; then
-      echo "[错误] GHCR 拉取失败（国内网络常见），重试: sh install.sh --cn"
+  echo "==> 拉取镜像: $IMAGE"
+  if ! docker pull "$IMAGE"; then
+    if [ "$IMAGE" = "$IMAGE_CN" ]; then
+      echo "[错误] 国内代理拉取失败，重试一次，或改用 GHCR 直连: sh install.sh --ghcr"
       echo "       或改用本地构建:  sh install.sh --build --cn"
-      exit 1
+    else
+      echo "[错误] GHCR 直连拉取失败（国内网络常见），请运行: sh install.sh"
+      echo "       或改用本地构建:  sh install.sh --build --cn"
     fi
+    exit 1
   fi
 
   echo "==> 启动容器..."
